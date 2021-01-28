@@ -17,8 +17,8 @@ while True:
         print(e)
         time.sleep(3)
 
-f = open("dataset.csv", "r")
-for line in f:
-  words = line.split('\t', 1)
-  producer.send(TOPIC, key=bytes(words[0], 'utf-8'), value=bytes(words[1], 'utf-8'))
-  time.sleep(0.5)
+# f = open("dataset.csv", "r")
+# for line in f:
+#   words = line.split('\t', 1)
+#   producer.send(TOPIC, key=bytes(words[0], 'utf-8'), value=bytes(words[1], 'utf-8'))
+#   time.sleep(0.5)
