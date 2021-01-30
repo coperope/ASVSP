@@ -26,16 +26,6 @@ services:
     env_file:
       - ./hadoop.env
 
-  # datanode2:
-  #   image: bde2020/hadoop-datanode:2.0.0-hadoop3.1.3-java8
-  #   container_name: datanode2
-  #   depends_on: 
-  #     - namenode
-  #   volumes:
-  #     - hadoop_datanode2:/hadoop/dfs/data
-  #   env_file:
-  #     - ./hadoop.env
-
   spark-master:
     image: bde2020/spark-master:2.4.0-hadoop3.1
     container_name: spark-master
@@ -131,7 +121,6 @@ services:
 volumes:
   hadoop_namenode:
   hadoop_datanode1:
-  # hadoop_datanode2:  
   # zoo:
   # zoolog:
   # kafka:  
