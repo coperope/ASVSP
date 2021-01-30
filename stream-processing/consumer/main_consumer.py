@@ -23,26 +23,28 @@ def quiet_logs(sc):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: kafka_wordcount.py <zk> <topic>", file=sys.stderr)
+        print("Usage: main_consumer.py <zk> <topic>", file=sys.stderr)
         sys.exit(-1)
 
     sc = SparkContext(appName="SparkStreamingKafkaChicagoSensors")
     quiet_logs(sc)
 
-    ssc = StreamingContext(sc, 3)
+    ssc = StreamingContext(sc, 30)
+    # ssc.checkpoint("stateful_checkpoint_direcory")
 
-    zkQuorum, topic = sys.argv[1:]
-    kvs = KafkaUtils.createStream(ssc, zkQuorum, "spark-streaming-consumer", {topic: 1})
+    zoo, topic = sys.argv[1:]
+    kvs = KafkaUtils.createStream(ssc, zoo, "spark-streaming-consumer", {topic: 1})
+    # parsed = kvs.map(lambda v: json.loads(v[1]))
     lines = kvs \
         .map(lambda x: "{0} {1}".format(x[0], x[1])) \
-        .map(lambda line: "{0} {1} {2} {3} {4} {5}".format(line.split()[0],
+            .map(lambda line: "{0} {1} {2} {3} {4}".format(line.split()[0],
             line.split()[1],
-            line.split()[2],
-            line.split()[3],
-            round(float(line.split()[10]) + (float(line.split()[11]) * (math.cos(float(line.split()[12]) * math.pi / 180))), 3),
-            "warning" if float(line.split()[10]) + (float(line.split()[11]) * (math.cos(float(line.split()[12]) * math.pi / 180))) > 800 else ""))
+            line.split()[11],
+            line.split()[6],
+            "warning" if float(line.split()[7].replace(",", "").replace("\"", "")) < float(line.split()[9].replace(",", "").replace("\"", "").replace("\"", "")) or float(line.split()[7].replace(",", "").replace("\"", "")) > float(line.split()[10].replace(",", "").replace("\"", "")) else line.split()[7]))
 
-    lines.pprint()
+        
+    lines.pprint(25)
 
     ssc.start()
     ssc.awaitTermination()
